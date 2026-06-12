@@ -1,58 +1,77 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jun 10 13:52:58 2026
-
-@author: giuliamaniotti
-"""
-
 def validar_ingredientes(texto):
     """
-    Valida que el usuario haya ingresado al menos un ingrediente.
+    Convierte el texto ingresado por el usuario en una lista de ingredientes válida.
 
-    Parámetro:
-        texto (str): texto ingresado por el usuario.
+    Parámetros:
+        texto (str): ingredientes separados por coma.
 
     Retorna:
-        bool: True si es válido, False si está vacío.
+        list: lista de ingredientes limpios.
+              Si el texto es inválido, devuelve lista vacía.
     """
+
+    if type(texto) != str:
+        return []
+
     if texto.strip() == "":
-        return False
-    return True
+        return []
+
+    ingredientes = texto.split(",")
+    ingredientes_validos = []
+
+    for ingrediente in ingredientes:
+        ingrediente = ingrediente.strip().lower()
+
+        if ingrediente != "":
+            ingredientes_validos.append(ingrediente)
+
+    return ingredientes_validos
 
 
 def validar_opcion_menu(opcion):
     """
-    Valida que la opción del menú sea correcta.
+    Verifica si la opción ingresada pertenece al menú.
 
-    Parámetro:
-        opcion (str): opción ingresada.
+    Parámetros:
+        opcion (str): opción ingresada por el usuario.
 
     Retorna:
-        bool: True si la opción está entre 1 y 4.
+        bool: True si la opción es válida, False si no.
     """
-    if opcion in ["1", "2", "3", "4"]:
+
+    opciones_validas = ["1", "2", "3", "4"]
+
+    if opcion in opciones_validas:
         return True
+
     return False
 
 
-def validar_numero_receta(opcion, cantidad_recetas):
+def validar_resultados_api(resultados):
     """
-    Valida que el número elegido corresponda a una receta existente.
+    Verifica si la API devolvió resultados válidos.
 
     Parámetros:
-        opcion (str): número ingresado por el usuario.
-        cantidad_recetas (int): cantidad total de recetas.
+        resultados (list): lista de recetas obtenidas desde la API.
 
     Retorna:
-        bool: True si el número es válido.
+        bool: True si hay resultados, False si no.
     """
-    if not opcion.isdigit():
+
+    if resultados is None:
         return False
 
-    numero = int(opcion)
+    if type(resultados) != list:
+        return False
 
-    if numero < 0 or numero > cantidad_recetas:
+    if len(resultados) == 0:
         return False
 
     return True
+
+Ojo: validar_ingredientes() devuelve una lista, no True/False. Entonces en main.py se usa así:
+ingredientes_usuario = validar_ingredientes(texto_ingredientes)
+
+if len(ingredientes_usuario) == 0:
+    print("Debe ingresar al menos un ingrediente.")
+    return
